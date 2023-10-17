@@ -20,7 +20,13 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-users';
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+    protected static ?string $navigationGroup = 'Administration';
 
     public static function form(Form $form): Form
     {
@@ -68,7 +74,7 @@ class UserResource extends Resource
                 tables\Columns\ImageColumn::make('avatar')->circular(),
                 Tables\Columns\TextColumn::make('name')->searchable()->sortable(),
                 Tables\Columns\TextColumn::make('email')->searchable()->sortable(),
-               //   Tables\Columns\IconColumn::make('active')->boolean(),
+                //   Tables\Columns\IconColumn::make('active')->boolean(),
                 Tables\Columns\ToggleColumn::make('active')->label('Edit Active'),
                 Tables\Columns\IconColumn::make('is_admin')->boolean()->label('Admin'),
                 Tables\Columns\TextColumn::make('created_at')->dateTime('d/m/y H:i'),
@@ -99,9 +105,9 @@ class UserResource extends Resource
                             if ($users->count() > 70) {
 
                                 Notification::make()
-                                ->title('Muitos registros afetados')
-                                ->warning()
-                                ->send();
+                                    ->title('Muitos registros afetados')
+                                    ->warning()
+                                    ->send();
 
                                 return false;
                             }

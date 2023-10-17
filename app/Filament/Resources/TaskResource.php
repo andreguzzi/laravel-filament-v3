@@ -6,6 +6,8 @@ use App\Filament\Resources\TaskResource\Pages;
 use App\Filament\Resources\TaskResource\RelationManagers;
 use App\Models\Task;
 use Filament\Forms;
+use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -19,24 +21,41 @@ class TaskResource extends Resource
 {
     protected static ?string $model = Task::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-hashtag';
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+    protected static ?string $navigationGroup = 'Tasks';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('user_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('task_group_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('title')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\Textarea::make('description')
-                    ->maxLength(65535)
-                    ->columnSpanFull(),
+                Card::make()->schema([
+                    Forms\Components\Select::make('user_id')
+                        ->relationship('user','name')
+                        ->searchable()
+                        ->required(),
+                        
+                    Forms\Components\Select::make('task_group_id')
+                        ->relationship('taskGroup','title')
+                        ->required(),
+                        
+                    Forms\Components\TextInput::make('title')
+                        ->required()
+                        ->maxLength(255)
+                        ->columnSpan(2),
+
+                    Forms\Components\RichEditor::make('description')
+                        ->maxLength(65535)
+                        ->columnSpan(2),
+                        
+                ])
+                ->columns(2)
+
+
             ]);
     }
 
@@ -52,11 +71,11 @@ class TaskResource extends Resource
                     ->searchable()->sortable()
                     ->colors([
                         'secondary',
-                        'primary' =>'Backlog',
+                        'primary' => 'Backlog',
                         'warning' => 'In Progress',
                         'success' => 'Done',
                         'danger' => 'To Do',
-            ]),
+                    ]),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime('d/m/y H:i'),
                 Tables\Columns\TextColumn::make('updated_at')
@@ -72,7 +91,7 @@ class TaskResource extends Resource
                     ->relationship('taskGroup', 'title')
                     ->multiple()
                     ->label('Grupo da tarefa'),
-          
+
             ])
 
             ->actions([
