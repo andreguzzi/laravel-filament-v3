@@ -54,7 +54,7 @@ class ProductResource extends Resource
                                         $set('slug', Str::slug($state));
                                     }),
                                 Forms\Components\TextInput::make('slug')
-                                    ->required()
+                                    ->disabled()
                                     ->dehydrated()
                                     ->required()
                                     ->unique(Product::class, 'slug', ignoreRecord: true),
