@@ -18,12 +18,12 @@ class Product extends Model
 
     public function brand(): BelongsTo
     {
-        //um produto esta associado a uma marca
+        //um produto esta associado/pertence a uma marca
         return $this->belongsTo(Brand::class);
     }
 
     public function categories(): BelongsToMany
     {
-        return $this->belongsToMany(Category::class)->withTimestamps();
+        return $this->belongsToMany(Category::class);
     }
 }

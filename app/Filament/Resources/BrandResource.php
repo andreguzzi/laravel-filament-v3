@@ -4,6 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\BrandResource\Pages;
 use App\Filament\Resources\BrandResource\RelationManagers;
+use App\Filament\Resources\BrandResource\RelationManagers\ProductsRelationManager;
+use Filament\Resources\RelationManagers\RelationManager;
 use App\Models\Brand;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
@@ -141,7 +143,7 @@ class BrandResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+          RelationManagers\ProductsRelationManager::class
         ];
     }
 

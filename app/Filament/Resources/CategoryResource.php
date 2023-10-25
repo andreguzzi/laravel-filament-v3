@@ -26,6 +26,9 @@ class CategoryResource extends Resource
 
     protected static ?string $navigationGroup = 'Shop';
 
+    //caso procisar esconder algum recuros
+    //protected static bool $shouldRegisterNavigation = false;
+
     public static function form(Form $form): Form
     {
         return $form
