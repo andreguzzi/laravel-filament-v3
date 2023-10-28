@@ -1,7 +1,5 @@
 Control Users, Shop, blog...
 
-![image](https://github.com/andreguzzi/laravel-filament-v3/assets/52809806/7a59242e-2d10-4372-82f8-5a09bf6ac269)
-
 
 
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
