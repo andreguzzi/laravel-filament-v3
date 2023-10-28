@@ -86,6 +86,9 @@ class ProductsRelationManager extends RelationManager
                                     ->relationship('categories', 'name')
                                     ->multiple()
                                     ->required(),
+                                Forms\Components\Select::make('brand_id')
+                                    ->relationship('brand', 'name')
+                                    ->required(),
                                 Forms\Components\FileUpload::make('image')
                                     ->directory('form-attachments')
                                     ->preserveFilenames()
