@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\BrandResource\RelationManagers;
+namespace App\Filament\Resources\CategoryResource\RelationManagers;
 
 use App\Enums\ProductTypeEnum;
 use App\Models\Product;
@@ -41,7 +41,7 @@ class ProductsRelationManager extends RelationManager
                                     ->dehydrated()
                                     ->required()
                                     ->unique(Product::class, 'slug', ignoreRecord: true),
-                                    
+
                                 Forms\Components\MarkdownEditor::make('description')
                                     ->columnSpan('full')
                             ])->columns(),
@@ -81,7 +81,7 @@ class ProductsRelationManager extends RelationManager
                                 Forms\Components\DatePicker::make('published_at')
                                     ->label('Availability')
                                     ->default(now()),
-                            
+
                                 Forms\Components\Select::make('categories')
                                     ->relationship('categories', 'name')
                                     ->multiple()
@@ -97,12 +97,12 @@ class ProductsRelationManager extends RelationManager
             ]);
     }
 
+
     public function table(Table $table): Table
     {
         return $table
             ->recordTitleAttribute('name')
             ->columns([
-
                 Tables\Columns\ImageColumn::make('image'),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
@@ -111,7 +111,7 @@ class ProductsRelationManager extends RelationManager
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                Tables\Columns\IconColumn::make('is_visible')->boolean()
+                Tables\Columns\IconColumn::make('is_visible')
                     ->sortable()
                     ->toggleable()
                     ->label('Visibility')
@@ -136,13 +136,16 @@ class ProductsRelationManager extends RelationManager
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\EditAction::make(),
-                    Tables\Actions\DeleteAction::make()
+                    Tables\Actions\DeleteAction::make(),
                 ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+            ])
+            ->emptyStateActions([
+                Tables\Actions\CreateAction::make(),
             ]);
     }
 }

@@ -4,11 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\BrandResource\Pages;
 use App\Filament\Resources\BrandResource\RelationManagers;
-use App\Filament\Resources\BrandResource\RelationManagers\ProductsRelationManager;
-use Filament\Resources\RelationManagers\RelationManager;
 use App\Models\Brand;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\ViewAction;
 use Filament\Forms;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\Group;
@@ -17,7 +13,6 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
-use Filament\Infolists\Components\Section as ComponentsSection;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\ColorColumn;
@@ -143,10 +138,9 @@ class BrandResource extends Resource
     public static function getRelations(): array
     {
         return [
-          RelationManagers\ProductsRelationManager::class
+            RelationManagers\ProductsRelationManager::class
         ];
     }
-
     public static function getPages(): array
     {
         return [

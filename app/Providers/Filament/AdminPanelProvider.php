@@ -21,6 +21,7 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use PhpParser\Node\Stmt\Label;
+use pxlrbt\FilamentSpotlight\SpotlightPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -50,8 +51,10 @@ class AdminPanelProvider extends PanelProvider
                     ->label('Settings')
                     ->url('')
                     ->icon('heroicon-o-cog-6-tooth'),
-                'logout' => MenuItem::make()->Label('Log Out')
-                    
+                'logout' => MenuItem::make()->Label('Log Out')      
+            ])
+            ->plugins([
+                SpotlightPlugin::make(),
             ])
             ->breadcrumbs(false)
             ->font('Poppins')

@@ -92,7 +92,6 @@ class ProductResource extends Resource
                             ->schema([
                                 Forms\Components\TextInput::make('sku')
                                     ->label("SKU (Stock Keeping Unit)")
-                                    ->unique()
                                     ->required(),
                                 Forms\Components\TextInput::make('price')
                                     ->numeric()

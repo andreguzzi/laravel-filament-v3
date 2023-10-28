@@ -15,6 +15,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
 class OrderResource extends Resource
 {
@@ -56,13 +57,19 @@ class OrderResource extends Resource
                                 ->searchable()
                                 ->required(),
 
+                            Forms\Components\TextInput::make('shipping_price')
+                                ->label('Shipping Cost')
+                                ->dehydrated()
+                                ->numeric()
+                                ->required(),
+
                             Forms\Components\Select::make('type')
                                 ->options([
                                     'pending' => OrderStatusEnum::PENDING->value,
                                     'processing' => OrderStatusEnum::PROCESSING->value,
                                     'completed' => OrderStatusEnum::COMPLETED->value,
                                     'declined' => OrderStatusEnum::DECLINED->value,
-                                ])->columnSpanFull()->required(),
+                                ])->required(),
 
                             Forms\Components\MarkdownEditor::make('notes')
                                 ->columnSpanFull()
@@ -75,10 +82,18 @@ class OrderResource extends Resource
                             ->schema([
                                 Forms\Components\Select::make('product_id')
                                 ->label('Product Name')
-                                ->options(Product::query()->pluck('name', 'id')),
+                                ->options(Product::query()->pluck('name', 'id'))
+                                ->required()
+                                ->reactive()
+                                ->afterStateUpdated(fn($state, Forms\Set $set) =>
+                                 $set('unit_price', Product::find($state)?->price ?? 0)),
+
+    
 
                             Forms\Components\TextInput::make('quantity')
                                 ->numeric()
+                                ->live()
+                                ->dehydrated()
                                 ->default(1)
                                 ->required(),
 
@@ -88,7 +103,14 @@ class OrderResource extends Resource
                                 ->dehydrated()
                                 ->numeric()
                                 ->required(),
-                            ])->columns(3)
+                            
+                            Forms\Components\Placeholder::make('total_price')
+                                ->label('Total Price')
+                                ->disabled()
+                                ->content(function ($get) {
+                                    return $get('quantity') * $get('unit_price');
+                                })
+                            ])->columns(4)
                         ])
 
                 ])->columnSpanFull()
@@ -112,14 +134,7 @@ class OrderResource extends Resource
                     ->searchable()
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('total_price')
-                    ->searchable()
-                    ->sortable()
-                    ->summarize([
-                        Tables\Columns\Summarizers\Sum::make()
-                            ->money()
-                    ]),
-
+       
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Order Date')
                     ->date(),
@@ -137,6 +152,7 @@ class OrderResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
+                    ExportBulkAction::make(),
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
