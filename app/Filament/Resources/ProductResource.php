@@ -105,7 +105,7 @@ class ProductResource extends Resource
                                 Forms\Components\Select::make('type')
                                     ->options([
                                         'downloadable' => ProductTypeEnum::DOWNLOADABLE->value,
-                                        'deliverable=' => ProductTypeEnum::DELIVERABLE->value,
+                                        'deliverable' => ProductTypeEnum::DELIVERABLE->value,
                                     ])->required()
 
                             ])->columns(2),

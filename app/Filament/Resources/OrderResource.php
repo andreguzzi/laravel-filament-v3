@@ -31,11 +31,11 @@ class OrderResource extends Resource
     {
         return static::getModel()::where('status', '=', 'processing')->count();
     }
- 
+
     public static function getNavigationBadgeColor(): ?string
     {
         return static::getModel()::where('status', '=', 'processing')->count() > 10
-            ? 'warning' 
+            ? 'warning'
             : 'primary';
     }
 
@@ -69,7 +69,8 @@ class OrderResource extends Resource
                                     'processing' => OrderStatusEnum::PROCESSING->value,
                                     'completed' => OrderStatusEnum::COMPLETED->value,
                                     'declined' => OrderStatusEnum::DECLINED->value,
-                                ])->required(),
+                                ])
+                                ->required(),
 
                             Forms\Components\MarkdownEditor::make('notes')
                                 ->columnSpanFull()
@@ -77,40 +78,40 @@ class OrderResource extends Resource
 
                     Forms\Components\Wizard\Step::make('Order Items')
                         ->schema([
-                          Forms\Components\Repeater::make('items')
-                            ->relationship()
-                            ->schema([
-                                Forms\Components\Select::make('product_id')
-                                ->label('Product Name')
-                                ->options(Product::query()->pluck('name', 'id'))
-                                ->required()
-                                ->reactive()
-                                ->afterStateUpdated(fn($state, Forms\Set $set) =>
-                                 $set('unit_price', Product::find($state)?->price ?? 0)),
+                            Forms\Components\Repeater::make('items')
+                                ->relationship()
+                                ->schema([
+                                    Forms\Components\Select::make('product_id')
+                                        ->label('Product Name')
+                                        ->options(Product::query()->pluck('name', 'id'))
+                                        ->required()
+                                        ->reactive()
+                                        ->afterStateUpdated(fn ($state, Forms\Set $set) =>
+                                        $set('unit_price', Product::find($state)?->price ?? 0)),
 
-    
 
-                            Forms\Components\TextInput::make('quantity')
-                                ->numeric()
-                                ->live()
-                                ->dehydrated()
-                                ->default(1)
-                                ->required(),
 
-                            Forms\Components\TextInput::make('unit_price')
-                                ->label('Unit Price')
-                                ->disabled()
-                                ->dehydrated()
-                                ->numeric()
-                                ->required(),
-                            
-                            Forms\Components\Placeholder::make('total_price')
-                                ->label('Total Price')
-                                ->disabled()
-                                ->content(function ($get) {
-                                    return $get('quantity') * $get('unit_price');
-                                })
-                            ])->columns(4)
+                                    Forms\Components\TextInput::make('quantity')
+                                        ->numeric()
+                                        ->live()
+                                        ->dehydrated()
+                                        ->default(1)
+                                        ->required(),
+
+                                    Forms\Components\TextInput::make('unit_price')
+                                        ->label('Unit Price')
+                                        ->disabled()
+                                        ->dehydrated()
+                                        ->numeric()
+                                        ->required(),
+
+                                    Forms\Components\Placeholder::make('total_price')
+                                        ->label('Total Price')
+                                        ->disabled()
+                                        ->content(function ($get) {
+                                            return $get('quantity') * $get('unit_price');
+                                        })
+                                ])->columns(4)
                         ])
 
                 ])->columnSpanFull()
@@ -132,9 +133,26 @@ class OrderResource extends Resource
 
                 Tables\Columns\TextColumn::make('status')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->badge()
+                    ->colors([
+                        OrderStatusEnum::PENDING->value => 'red',
+                        OrderStatusEnum::PROCESSING->value => 'orange',
+                        OrderStatusEnum::COMPLETED->value => 'green',
+                        OrderStatusEnum::DECLINED->value => 'gray',
+                    ]),
 
-       
+                Tables\Columns\TextColumn::make('shipping_price')
+                    ->label('Shipping cost')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable()
+                    ->summarize([
+                        Tables\Columns\Summarizers\Sum::make()
+                            ->money(),
+                    ]),
+
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Order Date')
                     ->date(),
